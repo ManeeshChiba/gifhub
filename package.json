@@ -1,0 +1,19 @@
+{
+  "name": "gifhub",
+  "version": "0.0.1",
+  "description": "Chrome extension to add gifs to github pull requests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ManeeshChiba/gifhub.git"
+  },
+  "author": "Maneesh Chiba",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ManeeshChiba/gifhub/issues"
+  },
+  "homepage": "https://github.com/ManeeshChiba/gifhub#readme"
+}
