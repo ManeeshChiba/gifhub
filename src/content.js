@@ -65,8 +65,11 @@ const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
     const matcher = new RegExp(regex, 'gm');
     if (string.match(matcher)) {
       prettyLog(`Keyword ${keyword} match found on ${id}`);
+      popoverUI();
+      console.log(document.querySelector('#gifhub-ui-modal'));
+      // document.querySelector('#gifhub-ui-modal').focus();
     }
   }
 }
 
-popoverUI();
+// popoverUI();
