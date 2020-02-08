@@ -1,7 +1,9 @@
 :root {
   --shade: rgba(0, 0, 0, 0.4);
   --white: rgb(230, 230, 230);
+  --gray: rgb(175, 175, 175);
   --round: 12px;
+  --square: 125px;
 }
 
 #gifhub-ui-wrapper {
@@ -10,7 +12,6 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: var(--shade);
   z-index: 9999;
 
   /* Layout */
@@ -19,22 +20,97 @@
   justify-content: center;
 }
 
+#gifhub-ui-wrapper * {
+  box-sizing: border-box;
+}
+
 #gifhub-ui-modal {
-  width: 50vw;
-  height: 30vh;
-  max-width: 700px;
   max-height: 400px;
-  background: var(--white);
   box-shadow: 0 0 15px 10px var(--shade);
   border-radius: var(--round);
+  backdrop-filter: blur(6px);
   padding: 20px;
 
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, 1fr) 0.25fr;
   gap: 16px;
+  align-items: center;
 }
 
-#gifhub-ui-modal span {
+#gifhub-ui-modal .gif {
+  position: relative;
   display: block;
+  border: 0;
+  width: var(--square);
+  height: var(--square);
   background: rebeccapurple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gifhub-ui-modal .gif::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  border-radius: 15%;
+  background: transparent;
+  z-index: -1;
+}
+
+#gifhub-ui-modal .gif:focus {
+  outline: none;
+}
+
+#gifhub-ui-modal .gif:focus::after {
+  background: var(--gray);
+}
+
+#gifhub-ui-modal .next-page {
+  display: block;
+  border: 0;
+  border-radius: 100%;
+  width: calc(var(--square) / 4);
+  height: calc(var(--square) / 4);
+  background: var(--white);
+  position: relative;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gifhub-ui-modal .next-page::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  transform: translateX(3px);
+  border-top: calc(var(--square) / 16) solid transparent;
+  border-bottom: calc(var(--square) / 16) solid transparent;
+  border-left: calc(var(--square) / 12) solid rebeccapurple;
+}
+
+#gifhub-ui-modal .next-page:focus {
+  outline: none;
+}
+
+#gifhub-ui-modal .next-page::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -15%;
+  left: -15%;
+  width: 130%;
+  height: 130%;
+  border-radius: 100%;
+  z-index: -1;
+  background: transparent;
+}
+
+#gifhub-ui-modal .next-page:focus::after {
+  background: var(--gray);
 }
