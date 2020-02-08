@@ -1,0 +1,40 @@
+:root {
+  --shade: rgba(0, 0, 0, 0.4);
+  --white: rgb(230, 230, 230);
+  --round: 12px;
+}
+
+#gifhub-ui-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--shade);
+  z-index: 9999;
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gifhub-ui-modal {
+  width: 50vw;
+  height: 30vh;
+  max-width: 700px;
+  max-height: 400px;
+  background: var(--white);
+  box-shadow: 0 0 15px 10px var(--shade);
+  border-radius: var(--round);
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+#gifhub-ui-modal span {
+  display: block;
+  background: rebeccapurple;
+}

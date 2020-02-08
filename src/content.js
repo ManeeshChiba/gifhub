@@ -21,6 +21,24 @@ for (let i = 0; i < textareas.length; i++) {
   textareas[i].dataset.gifhubId = generateGuid();
 }
 
+const popoverUI = () => {
+  const wrapper = document.createElement('section');
+  wrapper.id = 'gifhub-ui-wrapper';
+  const modal = document.createElement('div');
+  const nextButton = document.createElement('button');
+  //
+  modal.appendChild(document.createElement('span'));
+  modal.appendChild(document.createElement('span'));
+  modal.appendChild(document.createElement('span'));
+  modal.appendChild(document.createElement('span'));
+  modal.appendChild(document.createElement('span'));
+  modal.appendChild(nextButton);
+
+  modal.id='gifhub-ui-modal';
+  wrapper.appendChild(modal);
+  document.body.appendChild(wrapper);
+}
+
 // Add event listeners
 for (let i = 0; i < textareas.length; i++) {
   textareas[i].addEventListener('keyup', (e) => {
@@ -34,10 +52,12 @@ for (let i = 0; i < textareas.length; i++) {
 
 const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
   if (id) {
-    const regex = `\/${keyword}`;
+    const regex = `\/${keyword}(.*)`;
     const matcher = new RegExp(regex,'gm');
     if (string.match(matcher)) {
-      console.log(id);
+      prettyLog(`Keyword ${keyword} match found on ${id}`);
     }
   }
 }
+
+popoverUI();
