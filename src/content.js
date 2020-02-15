@@ -6,19 +6,16 @@ const prettyLog = (message) => {
   )
 };
 
+const state = {
+  listening: true,
+  visible: false,
+  ui: null,
+  textarea: null
+}
+
 const generateGuid = () => {
   const segment = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   return `${segment() + segment()}-${segment()}-${segment()}-${segment()}-${segment() + segment() + segment()}`;
-}
-
-prettyLog('GIFHub loaded');
-
-// Find all text areas
-const textareas = document.querySelectorAll('textarea');
-
-// Add event listeners
-for (let i = 0; i < textareas.length; i++) {
-  textareas[i].dataset.gifhubId = generateGuid();
 }
 
 const popoverUI = () => {
@@ -42,21 +39,10 @@ const popoverUI = () => {
 
   modal.appendChild(nextButton);
 
-
   modal.id = 'gifhub-ui-modal';
   wrapper.appendChild(modal);
   document.body.appendChild(wrapper);
-}
-
-// Add event listeners
-for (let i = 0; i < textareas.length; i++) {
-  textareas[i].addEventListener('keyup', (e) => {
-    const payload = {
-      id: textareas[i].dataset.gifhubId || null,
-      string: e.target.value,
-    }
-    checkKeywordMatch(payload);
-  });
+  state.ui = document.querySelectorAll('#gifhub-ui-wrapper')[0];
 }
 
 const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
@@ -65,11 +51,49 @@ const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
     const matcher = new RegExp(regex, 'gm');
     if (string.match(matcher)) {
       prettyLog(`Keyword ${keyword} match found on ${id}`);
-      popoverUI();
-      console.log(document.querySelector('#gifhub-ui-modal'));
-      // document.querySelector('#gifhub-ui-modal').focus();
+      state.textarea = document.querySelectorAll(`textarea[data-gifhub-id="${id}"]`)[0];
     }
   }
 }
 
-// popoverUI();
+prettyLog('GIFHub loaded');
+
+// Find all text areas
+const textareas = document.querySelectorAll('textarea');
+
+// Add event listeners
+for (let i = 0; i < textareas.length; i++) {
+  textareas[i].dataset.gifhubId = generateGuid();
+}
+
+// Add event listeners
+for (let i = 0; i < textareas.length; i++) {
+  textareas[i].addEventListener('keyup', (e) => {
+    if (state.listening) {
+      const payload = {
+        id: textareas[i].dataset.gifhubId || null,
+        string: e.target.value,
+      }
+      checkKeywordMatch(payload);
+    }
+    if (state.listening && e.keyCode === 13) {
+      state.listening = false;
+      e.preventDefault();
+      state.ui.classList.add('active');
+      state.textarea.blur();
+    }
+  });
+}
+
+// Listen for escape
+window.addEventListener('keyup', (e) => {
+  if (!state.listening && e.keyCode === 27) {
+    state.listening = true;
+    e.preventDefault();
+    state.ui.classList.remove('active');
+    state.textarea.focus();
+  }
+})
+
+// Add hidden UI to page
+popoverUI();

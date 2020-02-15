@@ -7,17 +7,21 @@
 }
 
 #gifhub-ui-wrapper {
+  display: none;
+  /* Layout */
+  align-items: center;
+  justify-content: center;
+  background: var(--shade);
+}
+
+#gifhub-ui-wrapper.active {
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-
-  /* Layout */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 #gifhub-ui-wrapper * {
