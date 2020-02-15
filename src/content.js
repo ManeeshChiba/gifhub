@@ -1,3 +1,5 @@
+const BROWSER = chrome ? chrome : browser;
+
 // Util
 const prettyLog = (message) => {
   console.log(
@@ -6,12 +8,22 @@ const prettyLog = (message) => {
   )
 };
 
+const sendMessage = (action, message) => {
+  const payload = {
+    id: BROWSER.runtime.id,
+    action,
+    message,
+  };
+  BROWSER.runtime.sendMessage(payload);
+};
+
 const state = {
   listening: true,
   visible: false,
   ui: null,
   firstGif: null,
   textarea: null,
+  query: ''
 }
 
 const generateGuid = () => {
@@ -54,6 +66,9 @@ const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
     if (string.match(matcher)) {
       prettyLog(`Keyword ${keyword} match found on ${id}`);
       state.textarea = document.querySelectorAll(`textarea[data-gifhub-id="${id}"]`)[0];
+      const value = string.match(matcher)[0].split(`/${keyword}`);
+      value.shift();
+      state.query = value.join(' ');
     }
   }
 }
@@ -84,6 +99,8 @@ for (let i = 0; i < textareas.length; i++) {
       state.ui.classList.add('active');
       state.textarea.blur();
       state.firstGif.focus();
+
+      sendMessage('FETCH_GIFS', state.query);
     }
   });
 }
