@@ -10,7 +10,8 @@ const state = {
   listening: true,
   visible: false,
   ui: null,
-  textarea: null
+  firstGif: null,
+  textarea: null,
 }
 
 const generateGuid = () => {
@@ -43,6 +44,7 @@ const popoverUI = () => {
   wrapper.appendChild(modal);
   document.body.appendChild(wrapper);
   state.ui = document.querySelectorAll('#gifhub-ui-wrapper')[0];
+  state.firstGif = state.ui.querySelectorAll('#gifhub-ui-modal > button')[0];
 }
 
 const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
@@ -81,6 +83,7 @@ for (let i = 0; i < textareas.length; i++) {
       e.preventDefault();
       state.ui.classList.add('active');
       state.textarea.blur();
+      state.firstGif.focus();
     }
   });
 }
