@@ -4,7 +4,10 @@
   "description": "Chrome extension to add gifs to github pull requests",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "export PRODUCTION=true && npm run build:js",
+    "build:js": "./node_modules/webpack/bin/webpack.js --config webpack.config.js",
+    "start": "./node_modules/webpack/bin/webpack.js --config webpack.config.js --watch"
   },
   "repository": {
     "type": "git",
@@ -16,7 +19,18 @@
     "url": "https://github.com/ManeeshChiba/gifhub/issues"
   },
   "homepage": "https://github.com/ManeeshChiba/gifhub#readme",
+  "dependencies": {},
   "devDependencies": {
-    "archiver": "^4.0.1"
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-proposal-throw-expressions": "^7.8.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "babel": "^6.23.0",
+    "babel-loader": "^8.0.6",
+    "chalk": "^3.0.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   }
 }
