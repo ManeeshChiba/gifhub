@@ -50,11 +50,21 @@ const setState = (object) => { // Inventive name, I know
   Object.keys(object).forEach((key) => {
     state[key] = object[key];
   });
+  console.log(state);
 }
 
 const generateGuid = () => {
   const segment = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
   return `${segment() + segment()}-${segment()}-${segment()}-${segment()}-${segment() + segment() + segment()}`;
+}
+
+const placeMarkdown = () => {
+  if (!state.selected) return false;
+  const url = state.selected.dataset.url;
+  console.log(`![](${url})`);
+  const textarea = document.querySelectorAll(`form[data-gifhub-id="${state.lastActiveId}"] textarea`)[0];
+  textarea.value = `${textarea.value} ![](${url})`;
+  state.ui.classList.remove('active');
 }
 
 const popoverUI = () => {
@@ -79,11 +89,15 @@ const popoverUI = () => {
   [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((iterate) => {
     const el = document.createElement('button');
     const img = document.createElement('img');
+    el.dataset.url = `test-${iterate}`;
     // img.src = 'https://via.placeholder.com/125';
     el.classList = `gif gif-${iterate}`;
     el.appendChild(img);
     searchResults.appendChild(el);
-    el.addEventListener('click', () => console.log(`test-${iterate}`));
+    el.addEventListener('click', (e) => {
+      setState({ selected: el});
+      placeMarkdown();
+    });
   });
 
   modal.appendChild(searchHeader);
@@ -96,20 +110,6 @@ const popoverUI = () => {
     searchBar: document.querySelectorAll('#gifhub-ui-search-input')[0]
   });
 }
-
-// const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
-//   if (id) {
-//     const regex = `\/${keyword}(.*)`;
-//     const matcher = new RegExp(regex, 'gm');
-//     if (string.match(matcher)) {
-//       prettyLog(`Keyword ${keyword} match found on ${id}`);
-//       state.textarea = document.querySelectorAll(`textarea[data-gifhub-id="${id}"]`)[0];
-//       const value = string.match(matcher)[0].split(`/${keyword}`);
-//       value.shift();
-//       state.query = value.join(' ');
-//     }
-//   }
-// }
 
 // Find all forms with toolbars
 const getEditableForms = () => {
@@ -142,47 +142,6 @@ const appendButtonsToForms = () => {
   });
 }
 
-// Add event listeners
-// for (let i = 0; i < forms.length; i++) {
-//   forms[i].dataset.gifhubId = generateGuid();
-// }
-
-// Add event listeners
-// for (let i = 0; i < forms.length; i++) {
-//   const toolbar = forms[i].querySelectorAll('markdown-toolbar');
-//   console.log(toolbar);
-// const test = document.createElement('div');
-// test.style.background = '#FF0000';
-// toolbar.appendChild(test);
-// forms[i].addEventListener('focus', () => {
-//   forms[i].dataset.gifhubActive = true;
-// });
-// forms[i].addEventListener('blur', () => {
-//   forms[i].dataset.gifhubActive = false;
-// });
-// }
-
-// for (let i = 0; i < textareas.length; i++) {
-//   textareas[i].addEventListener('keyup', (e) => {
-//     if (state.listening) {
-//       const payload = {
-//         id: textareas[i].dataset.gifhubId || null,
-//         string: e.target.value,
-//       }
-//       checkKeywordMatch(payload);
-//     }
-//     if (state.listening && e.keyCode === 13) {
-//       state.listening = false;
-//       e.preventDefault();
-//       state.ui.classList.add('active');
-//       state.textarea.blur();
-//       state.firstGif.focus();
-
-//       sendMessage('FETCH_GIFS', state.query);
-//     }
-//   });
-// }
-
 // Listen for escape
 window.addEventListener('keyup', (e) => {
   if (e.keyCode === 27) {
@@ -190,10 +149,9 @@ window.addEventListener('keyup', (e) => {
     state.ui.classList.remove('active');
     document.body.style.overflow = 'auto';
   }
-})
+});
 
-
-const TBD = (event) => {
+const showPopupOnButtonClick = (event) => {
   event.preventDefault();
   const id = event.target.dataset.gifhubFormId;
   setState({ lastActiveId: id });
@@ -204,7 +162,7 @@ const TBD = (event) => {
 
 const addButtonEventListeners = () => {
   const allGifhubButtons = document.querySelectorAll('button[data-gifhub-form-id]');
-  allGifhubButtons.forEach((button) => button.addEventListener('click', TBD));
+  allGifhubButtons.forEach((button) => button.addEventListener('click', showPopupOnButtonClick));
 }
 
 const addTextInputListener = () => {
