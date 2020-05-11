@@ -1,9 +1,10 @@
 :root {
-  --shade: rgba(0, 0, 0, 0.4);
+  --shade: rgba(0, 0, 0, 0.7);
   --white: rgb(230, 230, 230);
   --gray: rgb(175, 175, 175);
-  --round: 12px;
+  --round: 14px;
   --square: 125px;
+  --hot-pink: #e91e63;
 }
 
 #gifhub-ui-wrapper {
@@ -22,6 +23,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 9999;
+  backdrop-filter: blur(3px);
 }
 
 #gifhub-ui-wrapper * {
@@ -29,92 +31,87 @@
 }
 
 #gifhub-ui-modal {
-  max-height: 400px;
-  box-shadow: 0 0 15px 10px var(--shade);
-  border-radius: var(--round);
-  backdrop-filter: blur(6px);
-  padding: 20px;
+  width: 407px;
+}
 
+#gifhub-ui-searchbar {
+  border-radius: var(--round);
+  margin-bottom: 30px;
+}
+
+#gifhub-ui-searchbar input {
+  width: 100%;
+  font-size: 32px;
+  padding: 10px 32px;
+  border: 0;
+  background: rgba(0,0,0,.5);
+  position: relative;
+  border-radius: 32px 32px 32px 32px;
+  border: 1px solid rgba(0,0,0,.5);
+  color: white;
+}
+
+#gifhub-ui-searchbar input:active, #gifhub-ui-searchbar input:focus {
+  outline: none;
+  border: 1px solid var(--hot-pink);
+  border-radius: 32px 32px 32px 32px;
+  background: rgba(0,0,0,.8);
+}
+
+#gifhub-ui-results {
   display: grid;
-  grid-template-columns: repeat(5, 1fr) 0.25fr;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   gap: 16px;
   align-items: center;
 }
 
-#gifhub-ui-modal .gif {
+.gif {
   position: relative;
   display: block;
   border: 0;
   width: var(--square);
   height: var(--square);
-  background: rebeccapurple;
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: calc(var(--round) / 2);
 }
 
-#gifhub-ui-modal .gif::after {
-  content: '';
+.gif::after {
+  content: "";
   position: absolute;
   top: -10%;
   left: -10%;
   width: 120%;
   height: 120%;
-  border-radius: 15%;
+  border-radius: var(--round);
   background: transparent;
   z-index: -1;
 }
 
-#gifhub-ui-modal .gif:focus {
+.gif:focus {
   outline: none;
 }
 
-#gifhub-ui-modal .gif:focus::after {
-  background: var(--gray);
+.gif:focus::after {
+  background: var(--hot-pink);
 }
 
-#gifhub-ui-modal .next-page {
+.add-gif-button {
+  /* Lifted from github */
   display: block;
+  float: left;
+  padding: 4px;
+  color: #586069;
+  cursor: pointer;
+  background: none;
   border: 0;
-  border-radius: 100%;
-  width: calc(var(--square) / 4);
-  height: calc(var(--square) / 4);
-  background: var(--white);
+  text-align: center !important;
+  padding: 4px !important;
+  margin-right: 4px !important;
+  margin-left: 4px !important;
+  flex: auto !important;
   position: relative;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#gifhub-ui-modal .next-page::before {
-  content: '';
-  display: block;
-  width: 0;
-  height: 0;
-  transform: translateX(3px);
-  border-top: calc(var(--square) / 16) solid transparent;
-  border-bottom: calc(var(--square) / 16) solid transparent;
-  border-left: calc(var(--square) / 12) solid rebeccapurple;
-}
-
-#gifhub-ui-modal .next-page:focus {
-  outline: none;
-}
-
-#gifhub-ui-modal .next-page::after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: -15%;
-  left: -15%;
-  width: 130%;
-  height: 130%;
-  border-radius: 100%;
-  z-index: -1;
-  background: transparent;
-}
-
-#gifhub-ui-modal .next-page:focus::after {
-  background: var(--gray);
 }

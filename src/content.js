@@ -3,10 +3,20 @@ const BROWSER = chrome ? chrome : browser;
 // Util
 const prettyLog = (message) => {
   console.log(
-    `%c👾${message}`,
+    `%c👾 ${message}`,
     `color: #e91e63`
   )
 };
+
+const debounce = (method, delay) => {
+  let inDebounce;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(inDebounce)
+    inDebounce = setTimeout(() => method.apply(context, args), delay)
+  }
+}
 
 const sendMessage = (action, message) => {
   const payload = {
@@ -19,7 +29,7 @@ const sendMessage = (action, message) => {
 
 const createGifButton = (id) => {
   const addGif = document.createElement('button');
-  addGif.classList.add('flex-auto', 'mx-1', 'p-1', 'text-center', 'toolbar-item', 'tooltipped');
+  addGif.classList.add('add-gif-button', 'tooltipped');
   addGif.setAttribute('aria-label', 'Add a gif');
   addGif.setAttribute('role', 'button');
   addGif.dataset.gifhubFormId = id;
@@ -31,9 +41,15 @@ const state = {
   listening: true,
   visible: false,
   ui: null,
-  firstGif: null,
+  searchBar: null,
   textarea: null,
   query: ''
+}
+
+const setState = (object) => { // Inventive name, I know
+  Object.keys(object).forEach((key) => {
+    state[key] = object[key];
+  });
 }
 
 const generateGuid = () => {
@@ -41,33 +57,45 @@ const generateGuid = () => {
   return `${segment() + segment()}-${segment()}-${segment()}-${segment()}-${segment() + segment() + segment()}`;
 }
 
-// const popoverUI = () => {
-//   const wrapper = document.createElement('section');
-//   wrapper.id = 'gifhub-ui-wrapper';
-//   const modal = document.createElement('div');
+const popoverUI = () => {
+  const wrapper = document.createElement('section');
+  wrapper.id = 'gifhub-ui-wrapper';
+  const modal = document.createElement('div');
+  modal.id = 'gifhub-ui-modal';
 
-//   const nextButton = document.createElement('button');
-//   nextButton.classList = 'next-page';
+  const searchHeader = document.createElement('div');
+  searchHeader.id = 'gifhub-ui-searchbar';
 
-//   //
-//   [1, 2, 3, 4, 5].forEach((iterate) => {
-//     const el = document.createElement('button');
-//     const img = document.createElement('img');
-//     img.src = 'https://via.placeholder.com/125';
-//     el.classList = `gif gif-${iterate}`;
-//     el.appendChild(img);
-//     modal.appendChild(el);
-//     el.addEventListener('click', () => console.log(`test-${iterate}`));
-//   });
+  const searchbar = document.createElement('input');
+  searchbar.id = 'gifhub-ui-search-input'
+  searchbar.setAttribute('type', 'text');
+  searchbar.setAttribute('placeholder', 'Search for a GIF');
 
-//   modal.appendChild(nextButton);
+  searchHeader.appendChild(searchbar);
 
-//   modal.id = 'gifhub-ui-modal';
-//   wrapper.appendChild(modal);
-//   document.body.appendChild(wrapper);
-//   state.ui = document.querySelectorAll('#gifhub-ui-wrapper')[0];
-//   state.firstGif = state.ui.querySelectorAll('#gifhub-ui-modal > button')[0];
-// }
+  const searchResults = document.createElement('div');
+  searchResults.id = 'gifhub-ui-results';
+
+  [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((iterate) => {
+    const el = document.createElement('button');
+    const img = document.createElement('img');
+    // img.src = 'https://via.placeholder.com/125';
+    el.classList = `gif gif-${iterate}`;
+    el.appendChild(img);
+    searchResults.appendChild(el);
+    el.addEventListener('click', () => console.log(`test-${iterate}`));
+  });
+
+  modal.appendChild(searchHeader);
+  modal.appendChild(searchResults);
+  wrapper.appendChild(modal);
+  document.body.appendChild(wrapper);
+
+  setState({
+    ui: document.querySelectorAll('#gifhub-ui-wrapper')[0],
+    searchBar: document.querySelectorAll('#gifhub-ui-search-input')[0]
+  });
+}
 
 // const checkKeywordMatch = ({ id, string, keyword = 'gif' }) => {
 //   if (id) {
@@ -123,15 +151,15 @@ const appendButtonsToForms = () => {
 // for (let i = 0; i < forms.length; i++) {
 //   const toolbar = forms[i].querySelectorAll('markdown-toolbar');
 //   console.log(toolbar);
-  // const test = document.createElement('div');
-  // test.style.background = '#FF0000';
-  // toolbar.appendChild(test);
-  // forms[i].addEventListener('focus', () => {
-  //   forms[i].dataset.gifhubActive = true;
-  // });
-  // forms[i].addEventListener('blur', () => {
-  //   forms[i].dataset.gifhubActive = false;
-  // });
+// const test = document.createElement('div');
+// test.style.background = '#FF0000';
+// toolbar.appendChild(test);
+// forms[i].addEventListener('focus', () => {
+//   forms[i].dataset.gifhubActive = true;
+// });
+// forms[i].addEventListener('blur', () => {
+//   forms[i].dataset.gifhubActive = false;
+// });
 // }
 
 // for (let i = 0; i < textareas.length; i++) {
@@ -156,19 +184,41 @@ const appendButtonsToForms = () => {
 // }
 
 // Listen for escape
-// window.addEventListener('keyup', (e) => {
-//   if (!state.listening && e.keyCode === 27) {
-//     state.listening = true;
-//     e.preventDefault();
-//     state.ui.classList.remove('active');
-//     state.textarea.focus();
-//   }
-// })
+window.addEventListener('keyup', (e) => {
+  if (e.keyCode === 27) {
+    e.preventDefault();
+    state.ui.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+})
 
-// Add hidden UI to page
-// popoverUI();
 
-// Init
-prettyLog('GIFHub loaded');
-getEditableForms();
-appendButtonsToForms();
+const TBD = (event) => {
+  event.preventDefault();
+  const id = event.target.dataset.gifhubFormId;
+  setState({ lastActiveId: id });
+  state.ui.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  state.searchBar.focus();
+}
+
+const addButtonEventListeners = () => {
+  const allGifhubButtons = document.querySelectorAll('button[data-gifhub-form-id]');
+  allGifhubButtons.forEach((button) => button.addEventListener('click', TBD));
+}
+
+const addTextInputListener = () => {
+  state.searchBar.addEventListener('keyup', debounce((event) => {
+    setState({ query: event.target.value });
+    sendMessage('FETCH_GIFS', state.query);
+    prettyLog(`Requested gifs for term ${state.query}`);
+  }, 1000));
+};
+
+  // Init
+  popoverUI(); // Add hidden UI to page
+  getEditableForms();
+  appendButtonsToForms();
+  addButtonEventListeners();
+  addTextInputListener();
+  prettyLog('GIFHub loaded');
