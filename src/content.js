@@ -48,6 +48,14 @@ const sendMessage = (action, message) => {
   BROWSER.runtime.sendMessage(payload);
 };
 
+BROWSER.runtime.onMessage.addListener((request) => {
+  console.log(request);
+  if (request.id !== BROWSER.runtime.id) return null;
+  if (request.action === 'FETCH_GIFS_SUCCESS') {
+    populateSearchResults(request.message);
+  }
+});
+
 /**
  * UI Events and tracking
  */
