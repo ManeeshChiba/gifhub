@@ -13,13 +13,12 @@ const sendMessage = (action, message) => {
     action,
     message,
   };
-  // BROWSER.runtime.sendMessage(payload);
   BROWSER.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     BROWSER.tabs.sendMessage(tabs[0].id, payload);
   });
 };
 
-const format = (response) => response.data.map((item) => item.images.original.url);
+const format = (response) => response.data.map((item) => item.images.downsized_large.url);
 
 const getResults = (term) => {
   const path = `https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=${term}&limit=9&rating=PG`;

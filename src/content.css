@@ -60,50 +60,36 @@
 }
 
 #gifhub-ui-results {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 16px;
-  align-items: center;
+  box-sizing: border-box-box;
+  column-count: 3;
+  column-gap: 1em;
+  padding: 30px 0;
 }
 
 .gif {
   position: relative;
-  display: block;
+  display: inline-block;
   border: 0;
-  width: var(--square);
-  height: var(--square);
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: calc(var(--round) / 2);
+  width: 100%;
+  background: transparent;
+  margin: 0 0 32px;
+  padding:0;
+  line-height: 0;
+  border: 3px solid transparent;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all ease 260ms;
 }
 
-.gif::after {
-  content: "";
-  position: absolute;
-  top: -10%;
-  left: -10%;
-  width: 120%;
-  height: 120%;
-  border-radius: var(--round);
-  background: transparent;
-  z-index: -1;
+.gif img {
+  max-width: 100%;
+  height: auto;
 }
 
 .gif:focus {
   outline: none;
-}
-
-.gif:focus::after {
-  background: var(--hot-pink);
-}
-
-.gif img {
-  margin: 0;
-  padding: 0;
-  border-radius: calc(var(--round) / 2);
+  border: 3px solid var(--hot-pink);
+  opacity: 1;
 }
 
 .add-gif-button {
