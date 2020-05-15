@@ -33,5 +33,9 @@
   "permissions": [
     "tabs",
     "https://api.giphy.com/*"
+  ],
+  "web_accessible_resources": [
+    "assets/attribution.png",
+    "assets/logo.svg"
   ]
 }
