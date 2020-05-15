@@ -1,5 +1,27 @@
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 :root {
-  --shade: rgba(0, 0, 0, 0.7);
+  --shade: rgba(0, 0, 0, 0.5);
   --white: rgb(230, 230, 230);
   --gray: rgb(175, 175, 175);
   --round: 14px;
@@ -12,7 +34,10 @@
   /* Layout */
   align-items: center;
   justify-content: center;
-  background: var(--shade);
+  background-color: var(--shade);
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/attribution.png');
+  background-repeat: no-repeat;
+  background-position: 98% 98%;
 }
 
 #gifhub-ui-wrapper.active {
@@ -24,6 +49,7 @@
   height: 100vh;
   z-index: 9999;
   backdrop-filter: blur(3px);
+  animation: fade-in linear 120ms forwards;
 }
 
 #gifhub-ui-wrapper * {
@@ -60,10 +86,13 @@
 }
 
 #gifhub-ui-results {
-  box-sizing: border-box-box;
-  column-count: 3;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   column-gap: 1em;
+  row-gap: 1em;
   padding: 30px 0;
+  max-height: 75vh;
 }
 
 .gif {
@@ -72,13 +101,13 @@
   border: 0;
   width: 100%;
   background: transparent;
-  margin: 0 0 32px;
-  padding:0;
+  padding: 0;
   line-height: 0;
   border: 3px solid transparent;
   cursor: pointer;
   opacity: 0.7;
   transition: all ease 260ms;
+  animation: float-up ease 320ms forwards;
 }
 
 .gif img {
@@ -107,4 +136,9 @@
   margin-left: 4px !important;
   flex: auto !important;
   position: relative;
+}
+
+.add-gif-button img {
+  max-height: 21px;
+  width: auto;
 }
