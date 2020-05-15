@@ -3,18 +3,18 @@
   "name": "GIFHub",
   "short_name": "GIFHub",
   "version": "0.0.1",
-  "description": "Stuff and things",
+  "description": "Add gifs to your pull request and code comments on github",
   "icons": {
-    "16": "assets/16.png",
-    "48": "assets/48.png",
-    "128": "assets/128.png"
+    "16": "assets/logo-16.png",
+    "48": "assets/logo-48.png",
+    "128": "assets/logo-128.png"
   },
   "author": "Maneesh Chiba",
   "background": {
     "scripts": [
       "background.js"
     ],
-    "persistent": true
+    "persistent": false
   },
   "content_scripts": [
     {
