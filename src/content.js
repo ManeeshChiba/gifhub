@@ -13,8 +13,8 @@ const state = {
 // Util
 const prettyLog = (message) => {
   console.log(
-    `%c👾 ${message}`,
-    `color: #e91e63`
+    `%c 👾 ${message}`,
+    `color: #e91e63;`
   )
 };
 
@@ -49,7 +49,6 @@ const sendMessage = (action, message) => {
 };
 
 BROWSER.runtime.onMessage.addListener((request) => {
-  console.log(request);
   if (request.id !== BROWSER.runtime.id) return null;
   if (request.action === 'FETCH_GIFS_SUCCESS') {
     populateSearchResults(request.message);
@@ -62,6 +61,7 @@ BROWSER.runtime.onMessage.addListener((request) => {
 const openUi = () => {
   state.ui.classList.add('active');
   document.body.style.overflow = 'hidden';
+  state.searchBar.select();
 }
 
 const closeUi = () => {
@@ -72,7 +72,6 @@ const closeUi = () => {
 const placeMarkdown = () => {
   if (!state.selected) return false;
   const url = state.selected.dataset.url;
-  console.log(`![](${url})`);
   const textarea = document.querySelectorAll(`form[data-gifhub-id="${state.lastActiveId}"] textarea`)[0];
   textarea.value = `${textarea.value} ![](${url})`;
   closeUi();
@@ -119,6 +118,7 @@ window.addEventListener('keyup', (e) => {
 
 const showPopupOnButtonClick = (event) => {
   event.preventDefault();
+  console.log('yes');
   const id = event.target.dataset.gifhubFormId;
   setState({ lastActiveId: id });
   openUi();
@@ -148,7 +148,11 @@ const createGifButton = (id) => {
   addGif.setAttribute('aria-label', 'Add a gif');
   addGif.setAttribute('role', 'button');
   addGif.dataset.gifhubFormId = id;
-  addGif.appendChild(document.createTextNode(`👾`)); // Add svg here
+  const image = document.createElement('img');
+  var imgSrc = chrome.extension.getURL("assets/logo.svg");
+  image.src = imgSrc;
+  image.dataset.gifhubFormId = id;
+  addGif.appendChild(image);
   return addGif;
 }
 
@@ -195,23 +199,12 @@ const popoverUI = () => {
     resultsGrid: searchResults
   });
 
-  const stubResults = [
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125',
-    'https://via.placeholder.com/125'
-  ];
-  populateSearchResults(stubResults);
-
   modal.appendChild(searchHeader);
   modal.appendChild(searchResults);
   wrapper.appendChild(modal);
   document.body.appendChild(wrapper);
+
+  wrapper.addEventListener('click', closeUi);
 
   setState({
     ui: document.querySelectorAll('#gifhub-ui-wrapper')[0]
@@ -225,3 +218,8 @@ appendButtonsToForms();
 addButtonEventListeners();
 addTextInputListener();
 prettyLog('GIFHub loaded');
+
+
+window.addEventListener('locationchange',() => {
+  console.log('loaded');
+});
