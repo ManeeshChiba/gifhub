@@ -2,7 +2,8 @@
   "manifest_version": 2,
   "name": "GIFHub",
   "short_name": "GIFHub",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "version_name": "1.0.0 beta",
   "description": "Add gifs to your pull request and code comments on github",
   "icons": {
     "16": "assets/logo-16.png",
