@@ -29,3 +29,10 @@ const getResults = (term) => {
     })
     .catch((error) => { throw new Error(error) });
 }
+
+BROWSER.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  const { status } = changeInfo;
+  if (status === 'complete' && tab.active) {
+      sendMessage('LOAD_GIFHUB')
+    }
+});

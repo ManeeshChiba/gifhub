@@ -53,6 +53,9 @@ BROWSER.runtime.onMessage.addListener((request) => {
   if (request.action === 'FETCH_GIFS_SUCCESS') {
     populateSearchResults(request.message);
   }
+  if (request.action === 'LOAD_GIFHUB') {
+    addButtonsToValidForms();
+  }
 });
 
 /**
@@ -72,40 +75,51 @@ const closeUi = () => {
 const placeMarkdown = () => {
   if (!state.selected) return false;
   const url = state.selected.dataset.url;
-  const textarea = document.querySelectorAll(`form[data-gifhub-id="${state.lastActiveId}"] textarea`)[0];
-  textarea.value = `${textarea.value} ![](${url})`;
+  const textareas = document.querySelectorAll(`form[data-gifhub-id="${state.lastActiveId}"] textarea`);
+  textareas.forEach((textarea) => {
+    textarea.value = `${textarea.value} ![](${url})`;
+  });
   closeUi();
 }
 
-// Find all forms with toolbars
-const getEditableForms = () => {
+const addButtonEventListeners = () => {
+  const allGifhubButtons = document.querySelectorAll('button[data-gifhub-form-id]');
+  allGifhubButtons.forEach((button) => button.addEventListener('click', showPopupOnButtonClick));
+}
+
+const addButtonsToValidForms = () => {
+  const addlineButtons = document.querySelectorAll('*[aria-label="Add line comment"]');
+  addlineButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      setTimeout(() => {
+        addButtonEventListeners();
+      }, 10);
+    });
+  });
+  
+
+  // Find all forms with toolbars
   const forms = document.querySelectorAll('.application-main form'); // Node list
   for (let i = 0; i < forms.length; i++) {
     if (forms[i].querySelectorAll('markdown-toolbar').length > 0) {
-      forms[i].dataset.gifhubId = generateGuid();
-      forms[i].dataset.gifhubEnabled = 'true';
+      const id = generateGuid();
+      if (!forms[i].dataset.gifhubEnabled || forms[i].dataset.gifhubEnabled === 'false') {
+        forms[i].dataset.gifhubId = id;
+        forms[i].dataset.gifhubEnabled = 'true';
+        // Add button to toolbar
+        // We want to place this next to link GUI
+        const toolGroups = forms[i].querySelectorAll('markdown-toolbar .d-inline-block.mr-3');
+        toolGroups.forEach((group) => {
+          group.childNodes.forEach((tool) => {
+            const ariaLabel = tool.ariaLabel ? tool.getAttribute('aria-label') : '';
+            if (ariaLabel.includes('link')) { // Smelly
+              group.appendChild(createGifButton(id));
+            }
+          });
+        });
+      }
     }
   }
-}
-
-const appendButtonsToForms = () => {
-  // Cache all viable forms
-  const capturedForms = document.querySelectorAll('[data-gifhub-enabled]');
-
-  // Add button to toolbar
-  capturedForms.forEach((form) => {
-    const id = form.dataset.gifhubId;
-    // We want to place this next to link GUI
-    const toolGroups = form.querySelectorAll('markdown-toolbar .d-inline-block.mr-3');
-    toolGroups.forEach((group) => {
-      group.childNodes.forEach((tool) => {
-        const ariaLabel = tool.ariaLabel ? tool.getAttribute('aria-label') : '';
-        if (ariaLabel.includes('link')) { // Smelly
-          group.appendChild(createGifButton(id));
-        }
-      });
-    })
-  });
 }
 
 // Listen for escape
@@ -118,16 +132,10 @@ window.addEventListener('keyup', (e) => {
 
 const showPopupOnButtonClick = (event) => {
   event.preventDefault();
-  console.log('yes');
   const id = event.target.dataset.gifhubFormId;
   setState({ lastActiveId: id });
   openUi();
   state.searchBar.focus();
-}
-
-const addButtonEventListeners = () => {
-  const allGifhubButtons = document.querySelectorAll('button[data-gifhub-form-id]');
-  allGifhubButtons.forEach((button) => button.addEventListener('click', showPopupOnButtonClick));
 }
 
 const addTextInputListener = () => {
@@ -144,6 +152,7 @@ const addTextInputListener = () => {
  */
 const createGifButton = (id) => {
   const addGif = document.createElement('button');
+  addGif.type = 'button';
   addGif.classList.add('add-gif-button', 'tooltipped');
   addGif.setAttribute('aria-label', 'Add a gif');
   addGif.setAttribute('role', 'button');
@@ -153,6 +162,7 @@ const createGifButton = (id) => {
   image.src = imgSrc;
   image.dataset.gifhubFormId = id;
   addGif.appendChild(image);
+  addGif.addEventListener('click', showPopupOnButtonClick);
   return addGif;
 }
 
@@ -211,15 +221,6 @@ const popoverUI = () => {
   });
 }
 
-// Init
 popoverUI(); // Add hidden UI to page
-getEditableForms();
-appendButtonsToForms();
-addButtonEventListeners();
 addTextInputListener();
 prettyLog('GIFHub loaded');
-
-
-window.addEventListener('locationchange',() => {
-  console.log('loaded');
-});

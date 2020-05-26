@@ -139,6 +139,7 @@
 }
 
 .add-gif-button img {
-  max-height: 21px;
+  max-height: 18px;
+  margin-top: 2px;
   width: auto;
 }
