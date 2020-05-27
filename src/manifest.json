@@ -5,6 +5,10 @@
   "version": "1.0.0",
   "version_name": "1.0.0 beta",
   "description": "Add gifs to your pull request and code comments on github",
+  "homepage_url": "https://github.com/ManeeshChiba/gifhub",
+  "browser_action": {
+    "default_title": "GIFHub - GIFs for Github"
+  },
   "icons": {
     "16": "assets/logo-16.png",
     "48": "assets/logo-48.png",

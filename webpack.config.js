@@ -28,7 +28,7 @@ module.exports = () => {
     },
     output: {
       path: outputFiles,
-      filename: '[name].min.js',
+      filename: '[name].js',
     }
   }
 };
