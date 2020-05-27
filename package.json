@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ManeeshChiba/gifhub/issues"
   },
-  "homepage": "https://github.com/ManeeshChiba/gifhub#readme"
+  "homepage": "https://github.com/ManeeshChiba/gifhub#readme",
+  "devDependencies": {
+    "archiver": "^4.0.1"
+  }
 }
